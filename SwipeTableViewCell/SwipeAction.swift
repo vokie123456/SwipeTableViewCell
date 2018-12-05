@@ -8,14 +8,15 @@
 
 import UIKit
 
-open class SwipeAction {
+open class SwipeAction: NSObject {
     var title = ""
     var backgroundColor = UIColor.clear
     var image: UIImage?
+    var width: CGFloat = 60
     
-    let handler:(SwipeAction, IndexPath) -> Void
+    let handler:(SwipeAction, IndexPath?) -> Void
     
-    init(handler: @escaping (SwipeAction, IndexPath) -> Void) {
+    init(handler: @escaping (SwipeAction, IndexPath?) -> Void) {
         self.handler = handler
     }
 }

@@ -6,6 +6,8 @@
 //  Copyright © 2018 Adrian Gulyashki. All rights reserved.
 //
 
-protocol SwipeCellActionViewDelegate: class {
-    
+import Foundation
+
+@objc protocol SwipeCellActionViewDelegate {
+    @objc func swipeCellActionView(actionView: SwipeCellActionView, didTap action: SwipeAction)
 }
