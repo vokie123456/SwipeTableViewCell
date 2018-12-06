@@ -28,7 +28,7 @@ class SwipeCellActionView: UIView {
         self.swipeDirection = swipeDirection
         self.actionsWidth = actionsWidth
         super.init(frame: .zero)
-        backgroundColor = .red
+        setup()
     }
     
     private func setup() {

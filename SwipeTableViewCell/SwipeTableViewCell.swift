@@ -43,6 +43,7 @@ open class SwipeTableViewCell: UITableViewCell {
     // MARK: Setup
     
     private func setup() {
+        contentView.backgroundColor = .white
         panRecognizer.addTarget(self, action: #selector(pan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
@@ -130,7 +131,7 @@ open class SwipeTableViewCell: UITableViewCell {
             swipeActionsViewLeadingConstraint = swipeActionsView.leftAnchor.constraint(equalTo: leftAnchor)
             swipeActionsViewLeadingConstraint?.isActive = true
             swipeActionsView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-            swipeActionsView.heightAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.height).isActive = true
+            swipeActionsView.heightAnchor.constraint(equalToConstant: contentView.frame.height).isActive = true
         }
     }
     
