@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 @objc protocol SwipeTableViewCellDelegate {
-    @objc func swipeTableViewCell(cell: SwipeTableViewCell, actionsForDirection direction: SwipeDirection) -> [SwipeAction]
-    @objc func shouldStartSwipeForSwipeTableViewCell(cell: SwipeTableViewCell) -> Bool
-    @objc func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForDirection direction: SwipeDirection) -> CGFloat
+    @objc optional func shouldStartSwipeForSwipeTableViewCell(cell: SwipeTableViewCell) -> Bool
+    @objc optional func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForDirection direction: SwipeDirection) -> CGFloat
 }

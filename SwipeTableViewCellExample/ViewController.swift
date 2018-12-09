@@ -38,24 +38,45 @@ extension ViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! SwipeTableViewCell
         cell.textLabel?.text = "tadaaa"
         cell.delegate = self
+        cell.dataSource = self
         return cell
     }
 }
 
 extension ViewController: SwipeTableViewCellDelegate {
-    func swipeTableViewCell(cell: SwipeTableViewCell, actionsForDirection direction: SwipeDirection) -> [SwipeAction] {
-        let a = SwipeAction(handler: {action, path in })
-        a.title = "Delete"
-        a.backgroundColor = .red
-        return [a]
-    }
     
     func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForDirection direction: SwipeDirection) -> CGFloat {
-        return 60
+        return 80
+    }
+}
+
+extension ViewController: SwipeTableViewCellDataSource {
+    func swipeTableViewCell(cell: SwipeTableViewCell, numberOfActionsForSwipeDirection direction: SwipeDirection) -> Int {
+        if direction == .right {
+            return 2
+        }
+        
+        return 1
     }
     
-    func shouldStartSwipeForSwipeTableViewCell(cell: SwipeTableViewCell) -> Bool {
-        return true
+    func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forDirection direction: SwipeDirection) -> SwipeAction {
+        if direction == .right {
+            let action = SwipeAction(handler: {action, path in})
+            if index == 0 {
+                action.title = "Add"
+                action.backgroundColor = .green
+            } else {
+                action.title = "Archive"
+                action.backgroundColor = .orange
+            }
+            
+            return action
+        }
+        
+        let deleteAction = SwipeAction(handler: {action, path in })
+        deleteAction.title = "Delete"
+        deleteAction.backgroundColor = .red
+        return deleteAction
     }
 }
 

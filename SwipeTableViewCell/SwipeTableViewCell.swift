@@ -16,17 +16,19 @@ open class SwipeTableViewCell: UITableViewCell {
     var isTapToCloseEnabled = false
     var swipeToExecuteTreshold: CGFloat = 100
     weak var delegate: SwipeTableViewCellDelegate?
-
+    weak var dataSource: SwipeTableViewCellDataSource?
+    private(set) weak var tableView: UITableView!
+    
     private var swipeActionsView: SwipeCellActionView?
     private let panRecognizer = UIPanGestureRecognizer()
     private let tapRecognizer = UITapGestureRecognizer()
     private var isCellSwiped = false
     private var lastPan = CGPoint.zero
-    private(set) weak var tableView: UITableView!
     private var cachedSelectionStyle: UITableViewCell.SelectionStyle = .default
     private var isSwipeToExecuteTriggered = false
     private var swipeDirection: SwipeDirection?
     private var totalActionsWidth: CGFloat = 0
+    private let defaultActionWidth: CGFloat = 44
     private var swipeToExecuteTrigger: CGFloat = 0
     
     private var swipeActionsViewLeadingConstraint: NSLayoutConstraint?
@@ -110,7 +112,7 @@ open class SwipeTableViewCell: UITableViewCell {
     // MARK: Private methods
     
     private func setupSwipeActionsView(for direction: SwipeDirection?) {
-        guard let direction = direction, let delegate = delegate else {
+        guard let direction = direction, let dataSource = dataSource else {
             return
         }
         
@@ -119,8 +121,14 @@ open class SwipeTableViewCell: UITableViewCell {
             swipeActionsView = nil
         }
         
-        let swipeActions = delegate.swipeTableViewCell(cell: self, actionsForDirection: direction)
-        let actionWidth = delegate.swipeTableViewCell(cell: self, widthForActionsForDirection: direction)
+//        let swipeActions = delegate.swipeTableViewCell(cell: self, actionsForDirection: direction)
+        var swipeActions = [SwipeAction]()
+        let numberOfActions = dataSource.swipeTableViewCell(cell: self, numberOfActionsForSwipeDirection: direction)
+        for i in 0..<numberOfActions {
+            swipeActions.append(dataSource.swipeTableViewCell(cell: self, actionAtIndex: i, forDirection: direction))
+        }
+        
+        let actionWidth = delegate?.swipeTableViewCell?(cell: self, widthForActionsForDirection: direction) ?? defaultActionWidth
         totalActionsWidth = CGFloat(swipeActions.count) * actionWidth
         swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
         swipeActionsView = SwipeCellActionView(actions: swipeActions, swipeDirection: direction, actionsWidth: actionWidth)
@@ -238,11 +246,7 @@ open class SwipeTableViewCell: UITableViewCell {
         
         if gestureRecognizer.isEqual(panRecognizer) {
             let velocity = panRecognizer.velocity(in: self)
-            var shouldStartSwipe = true
-            if let delegate = delegate {
-                shouldStartSwipe = delegate.shouldStartSwipeForSwipeTableViewCell(cell: self)
-            }
-            
+            let shouldStartSwipe = delegate?.shouldStartSwipeForSwipeTableViewCell?(cell: self) ?? true
             if abs(velocity.y) > abs(velocity.x) || !shouldStartSwipe {
                 return false
             }
