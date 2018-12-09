@@ -13,8 +13,8 @@ open class SwipeTableViewCell: UITableViewCell {
     var isSwipeEnabled = true
     var isSwipeToExecuteEnabled = true
     var isActionsAnimationEnabled = true
+    var isTapToCloseEnabled = false
     var swipeToExecuteTreshold: CGFloat = 100
-//    var actionsWidth: CGFloat = 60
     weak var delegate: SwipeTableViewCellDelegate?
 
     private var swipeActionsView: SwipeCellActionView?
@@ -232,7 +232,7 @@ open class SwipeTableViewCell: UITableViewCell {
     // MARK: UIGestureRecognizerDelegate
     
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if !isSwipeEnabled || (gestureRecognizer.isEqual(tapRecognizer) && isCellSwiped) {
+        if !isSwipeEnabled || (gestureRecognizer.isEqual(tapRecognizer) && (!isCellSwiped || !isTapToCloseEnabled)) {
             return false
         }
         
