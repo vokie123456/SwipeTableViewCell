@@ -45,7 +45,7 @@ extension ViewController: UITableViewDataSource {
 
 extension ViewController: SwipeTableViewCellDelegate {
     
-    func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForDirection direction: SwipeDirection) -> CGFloat {
+    func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat {
         return 80
     }
 }
@@ -59,7 +59,7 @@ extension ViewController: SwipeTableViewCellDataSource {
         return 1
     }
     
-    func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forDirection direction: SwipeDirection) -> SwipeAction {
+    func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
         if direction == .right {
             let action = SwipeAction(handler: {action, path in})
             if index == 0 {

@@ -10,5 +10,5 @@ import Foundation
 
 @objc protocol SwipeTableViewCellDataSource {
     @objc func swipeTableViewCell(cell: SwipeTableViewCell, numberOfActionsForSwipeDirection direction: SwipeDirection) -> Int
-    @objc func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forDirection direction: SwipeDirection) -> SwipeAction
+    @objc func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction
 }

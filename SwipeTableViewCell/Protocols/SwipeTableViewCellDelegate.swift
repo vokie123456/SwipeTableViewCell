@@ -11,5 +11,6 @@ import UIKit
 
 @objc protocol SwipeTableViewCellDelegate {
     @objc optional func shouldStartSwipeForSwipeTableViewCell(cell: SwipeTableViewCell) -> Bool
-    @objc optional func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForDirection direction: SwipeDirection) -> CGFloat
+    @objc optional func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat
+    @objc optional func swipeTableViewCell(cell: SwipeTableViewCell, didTapActionAtIndex index: Int, withSwipeDirection direction: SwipeDirection)
 }

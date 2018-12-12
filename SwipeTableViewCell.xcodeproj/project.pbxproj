@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1981BFF621BD3FD300F0473B /* SwipeTableViewCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1981BFF521BD3FD300F0473B /* SwipeTableViewCellDataSource.swift */; };
+		1981BFF821BD874200F0473B /* SwipeActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1981BFF721BD874200F0473B /* SwipeActionView.swift */; };
 		3A879CD621B18F4B0006B4B5 /* SwipeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CD521B18F4B0006B4B5 /* SwipeAction.swift */; };
-		3A879CD821B18F790006B4B5 /* SwipeCellActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CD721B18F790006B4B5 /* SwipeCellActionView.swift */; };
+		3A879CD821B18F790006B4B5 /* SwipeActionsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CD721B18F790006B4B5 /* SwipeActionsContainerView.swift */; };
 		3A879CDB21B190AE0006B4B5 /* SwipeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CDA21B190AE0006B4B5 /* SwipeTableViewCell.swift */; };
 		3A879CE021B1911C0006B4B5 /* SwipeTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CDF21B1911C0006B4B5 /* SwipeTableViewCellDelegate.swift */; };
 		3A879CE321B194980006B4B5 /* SwipeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A879CE221B194980006B4B5 /* SwipeDirection.swift */; };
@@ -42,8 +43,9 @@
 
 /* Begin PBXFileReference section */
 		1981BFF521BD3FD300F0473B /* SwipeTableViewCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewCellDataSource.swift; sourceTree = "<group>"; };
+		1981BFF721BD874200F0473B /* SwipeActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionView.swift; sourceTree = "<group>"; };
 		3A879CD521B18F4B0006B4B5 /* SwipeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeAction.swift; sourceTree = "<group>"; };
-		3A879CD721B18F790006B4B5 /* SwipeCellActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeCellActionView.swift; sourceTree = "<group>"; };
+		3A879CD721B18F790006B4B5 /* SwipeActionsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionsContainerView.swift; sourceTree = "<group>"; };
 		3A879CDA21B190AE0006B4B5 /* SwipeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewCell.swift; sourceTree = "<group>"; };
 		3A879CDF21B1911C0006B4B5 /* SwipeTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewCellDelegate.swift; sourceTree = "<group>"; };
 		3A879CE221B194980006B4B5 /* SwipeDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeDirection.swift; sourceTree = "<group>"; };
@@ -94,8 +96,9 @@
 				3A879CE121B194690006B4B5 /* Enums */,
 				3A879CDC21B190DE0006B4B5 /* Protocols */,
 				3A879CD521B18F4B0006B4B5 /* SwipeAction.swift */,
-				3A879CD721B18F790006B4B5 /* SwipeCellActionView.swift */,
+				3A879CD721B18F790006B4B5 /* SwipeActionsContainerView.swift */,
 				3A879CDA21B190AE0006B4B5 /* SwipeTableViewCell.swift */,
+				1981BFF721BD874200F0473B /* SwipeActionView.swift */,
 			);
 			path = SwipeTableViewCell;
 			sourceTree = "<group>";
@@ -304,12 +307,13 @@
 				3A879CE321B194980006B4B5 /* SwipeDirection.swift in Sources */,
 				3A9AFF4821AB040B00A7024E /* ViewController.swift in Sources */,
 				3A879CDB21B190AE0006B4B5 /* SwipeTableViewCell.swift in Sources */,
-				3A879CD821B18F790006B4B5 /* SwipeCellActionView.swift in Sources */,
+				3A879CD821B18F790006B4B5 /* SwipeActionsContainerView.swift in Sources */,
 				3A879CE521B195E60006B4B5 /* SwipeCellActionViewDelegate.swift in Sources */,
 				3A879CE021B1911C0006B4B5 /* SwipeTableViewCellDelegate.swift in Sources */,
 				3A9AFF4621AB040B00A7024E /* AppDelegate.swift in Sources */,
 				1981BFF621BD3FD300F0473B /* SwipeTableViewCellDataSource.swift in Sources */,
 				3A879CD621B18F4B0006B4B5 /* SwipeAction.swift in Sources */,
+				1981BFF821BD874200F0473B /* SwipeActionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

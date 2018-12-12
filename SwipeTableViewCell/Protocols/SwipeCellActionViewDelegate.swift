@@ -9,5 +9,5 @@
 import Foundation
 
 @objc protocol SwipeCellActionViewDelegate {
-    @objc func swipeCellActionView(actionView: SwipeCellActionView, didTap action: SwipeAction)
+    @objc func swipeCellActionView(actionView: SwipeActionsContainerView, didTap action: SwipeAction)
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SwipeCellActionView: UIView {
+class SwipeActionsContainerView: UIView {
     let actions: [SwipeAction]
     let swipeDirection: SwipeDirection
     weak var delegate: SwipeCellActionViewDelegate?

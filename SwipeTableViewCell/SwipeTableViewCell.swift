@@ -19,7 +19,7 @@ open class SwipeTableViewCell: UITableViewCell {
     weak var dataSource: SwipeTableViewCellDataSource?
     private(set) weak var tableView: UITableView!
     
-    private var swipeActionsView: SwipeCellActionView?
+    private var swipeActionsView: SwipeActionsContainerView?
     private let panRecognizer = UIPanGestureRecognizer()
     private let tapRecognizer = UITapGestureRecognizer()
     private var isCellSwiped = false
@@ -30,6 +30,7 @@ open class SwipeTableViewCell: UITableViewCell {
     private var totalActionsWidth: CGFloat = 0
     private let defaultActionWidth: CGFloat = 44
     private var swipeToExecuteTrigger: CGFloat = 0
+    private var visibleActions = [SwipeAction]()
     
     private var swipeActionsViewLeadingConstraint: NSLayoutConstraint?
     
@@ -121,17 +122,15 @@ open class SwipeTableViewCell: UITableViewCell {
             swipeActionsView = nil
         }
         
-//        let swipeActions = delegate.swipeTableViewCell(cell: self, actionsForDirection: direction)
-        var swipeActions = [SwipeAction]()
         let numberOfActions = dataSource.swipeTableViewCell(cell: self, numberOfActionsForSwipeDirection: direction)
         for i in 0..<numberOfActions {
-            swipeActions.append(dataSource.swipeTableViewCell(cell: self, actionAtIndex: i, forDirection: direction))
+            visibleActions.append(dataSource.swipeTableViewCell(cell: self, actionAtIndex: i, forSwipeDirection: direction))
         }
         
-        let actionWidth = delegate?.swipeTableViewCell?(cell: self, widthForActionsForDirection: direction) ?? defaultActionWidth
-        totalActionsWidth = CGFloat(swipeActions.count) * actionWidth
+        let actionWidth = delegate?.swipeTableViewCell?(cell: self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
+        totalActionsWidth = CGFloat(visibleActions.count) * actionWidth
         swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
-        swipeActionsView = SwipeCellActionView(actions: swipeActions, swipeDirection: direction, actionsWidth: actionWidth)
+        swipeActionsView = SwipeActionsContainerView(actions: visibleActions, swipeDirection: direction, actionsWidth: actionWidth)
         if let swipeActionsView = swipeActionsView {
             swipeActionsView.translatesAutoresizingMaskIntoConstraints = false
             swipeActionsView.delegate = self
@@ -204,15 +203,16 @@ open class SwipeTableViewCell: UITableViewCell {
             }
         }, completion: { _ in
             self.isCellSwiped = self.frame.minX != 0
-            if self.isSwipeToExecuteTriggered {
-                self.swipeActionsView?.triggerAction(at: 0)
-                self.isSwipeToExecuteTriggered = false
-            }
-            
             if !self.isCellSwiped {
                 self.selectionStyle = self.cachedSelectionStyle
                 self.swipeActionsView?.removeFromSuperview()
                 self.swipeActionsView = nil
+                self.visibleActions.removeAll()
+            }
+            
+            if self.isSwipeToExecuteTriggered {
+                self.isSwipeToExecuteTriggered = false
+//                self.triggerAction(at: 0)
             }
         })
     }
@@ -274,9 +274,7 @@ open class SwipeTableViewCell: UITableViewCell {
 }
 
 extension SwipeTableViewCell: SwipeCellActionViewDelegate {
-    func swipeCellActionView(actionView: SwipeCellActionView, didTap action: SwipeAction) {
-        //TODO: Use delegate instead of this. This will cause retain cycle.
-        action.handler(action, tableView.indexPath(for: self))
-
+    func swipeCellActionView(actionView: SwipeActionsContainerView, didTap action: SwipeAction) {
+    
     }
 }
