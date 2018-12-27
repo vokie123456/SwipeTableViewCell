@@ -13,8 +13,7 @@ class SwipeActionsContainerView: UIView {
     let swipeDirection: SwipeDirection
     weak var delegate: SwipeCellActionViewDelegate?
     
-    private var buttons = [UIButton]()
-    private var buttonWrappers = [UIView]()
+    private var actionViews = [SwipeActionView]()
     private var widthConstraints = [NSLayoutConstraint]()
     private var animatableConstraints = [NSLayoutConstraint]()
     private let actionsWidth: CGFloat
@@ -34,40 +33,29 @@ class SwipeActionsContainerView: UIView {
     private func setup() {
         for index in 0..<actions.count {
             let action = actions[index]
-            let btnWrapper = UIView()
-            btnWrapper.translatesAutoresizingMaskIntoConstraints = false
-            btnWrapper.backgroundColor = action.backgroundColor
-            insertSubview(btnWrapper, at: 0)
-            buttonWrappers.append(btnWrapper)
+            let actionView = SwipeActionView(action: action)
+            actionView.translatesAutoresizingMaskIntoConstraints = false
+            insertSubview(actionView, at: 0)
+            actionViews.append(actionView)
             
-            let offset = CGFloat(index) * actionsWidth
-            let btn = UIButton()
-            btn.addTarget(self, action: #selector(buttonTapped(button:)), for: .touchUpInside)
-            btn.translatesAutoresizingMaskIntoConstraints = false
-            btn.backgroundColor = .clear
-            btn.setTitle(action.title, for: .normal)
-            btnWrapper.addSubview(btn)
-            buttons.append(btn)
+            // height
+            actionView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
             
-            btnWrapper.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
-            let widthConstraint = btnWrapper.widthAnchor.constraint(greaterThanOrEqualToConstant: actionsWidth)
+            // width
+            let widthConstraint = actionView.widthAnchor.constraint(greaterThanOrEqualToConstant: actionsWidth)
             widthConstraint.isActive = true
             widthConstraints.append(widthConstraint)
+            
             var edgeConstraint: NSLayoutConstraint!
-            var btnHorizontalConstraint: NSLayoutConstraint!
+            let offset = CGFloat(index) * actionsWidth
             if swipeDirection == .right {
-                edgeConstraint = btnWrapper.leftAnchor.constraint(equalTo: leftAnchor, constant: offset)
-                btnHorizontalConstraint = btn.rightAnchor.constraint(equalTo: btnWrapper.rightAnchor)
+                edgeConstraint = actionView.leftAnchor.constraint(equalTo: leftAnchor, constant: offset)
             } else {
-                edgeConstraint = btnWrapper.rightAnchor.constraint(equalTo: rightAnchor, constant: -offset)
-                btnHorizontalConstraint = btn.leftAnchor.constraint(equalTo: btnWrapper.leftAnchor)
+                edgeConstraint = actionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -offset)
             }
             
             edgeConstraint.isActive = true
             animatableConstraints.append(edgeConstraint)
-            btnHorizontalConstraint.isActive = true
-            btn.widthAnchor.constraint(greaterThanOrEqualToConstant: actionsWidth).isActive = true
-            btn.heightAnchor.constraint(equalTo: btnWrapper.heightAnchor).isActive = true
         }
     }
     
@@ -77,8 +65,8 @@ class SwipeActionsContainerView: UIView {
     
     func updateButtonsConstraints(with offset: CGFloat) {
         let visibleWidth = abs(offset)
-        for i in 0..<buttons.count {
-            var visibleBtnWidth = visibleWidth / CGFloat(buttons.count)
+        for i in 0..<actionViews.count {
+            var visibleBtnWidth = visibleWidth / CGFloat(actionViews.count)
             var maxWidth = actionsWidth
             if visibleBtnWidth >= actionsWidth {
                 visibleBtnWidth = ((visibleBtnWidth - actionsWidth) / 2) + actionsWidth

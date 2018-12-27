@@ -22,7 +22,9 @@ class SwipeActionView: UIView {
     init(action: SwipeAction) {
         self.action = action
         super.init(frame: .zero)
+        
         setupLayout()
+        applyActionData()
     }
     
     private func setupLayout() {
@@ -39,5 +41,8 @@ class SwipeActionView: UIView {
         stackView.addArrangedSubview(label)
     }
     
-
+    private func applyActionData() {
+        backgroundColor = action.backgroundColor
+        label.text = action.title
+    }
 }
