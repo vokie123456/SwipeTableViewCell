@@ -28,15 +28,19 @@ class SwipeActionView: UIView {
     }
     
     private func setupLayout() {
+        label.textAlignment = .center
+    
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
         stackView.axis = .horizontal
+        stackView.distribution = .fillProportionally
         addSubview(stackView)
-        stackView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-        stackView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         
+        stackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        stackView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor).isActive = true
+        stackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor).isActive = true
+
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(label)
     }
