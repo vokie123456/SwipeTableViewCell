@@ -9,7 +9,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+    var rows = 10
     let tableView = UITableView()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return rows
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -61,7 +61,9 @@ extension ViewController: SwipeTableViewCellDataSource {
     
     func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
         if direction == .right {
-            let action = SwipeAction(handler: {action, path in})
+            let action = SwipeAction(handler: {action, path in
+                action.backgroundColor = .yellow
+            })
             if index == 0 {
                 action.title = "Add"
                 action.backgroundColor = .green
@@ -73,7 +75,13 @@ extension ViewController: SwipeTableViewCellDataSource {
             return action
         }
         
-        let deleteAction = SwipeAction(handler: {action, path in })
+        let deleteAction = SwipeAction(handler: {action, path in
+            if let path = path {
+                self.rows -= 1
+                
+                self.tableView.deleteRows(at: [path], with: .fade)
+            }
+        })
         deleteAction.title = "Delete"
         deleteAction.backgroundColor = .red
         return deleteAction

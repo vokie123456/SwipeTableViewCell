@@ -10,6 +10,7 @@ import UIKit
 
 class SwipeActionView: UIView {
     let action: SwipeAction
+    weak var delegate: SwipeActionViewDelegate?
     
     private let label = UILabel()
     private let imageView = UIImageView()
@@ -23,6 +24,8 @@ class SwipeActionView: UIView {
         self.action = action
         super.init(frame: .zero)
         
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(triggerAction))
+        addGestureRecognizer(tapRecognizer)
         setupLayout()
         applyActionData()
     }
@@ -48,5 +51,13 @@ class SwipeActionView: UIView {
     private func applyActionData() {
         backgroundColor = action.backgroundColor
         label.text = action.title
+    }
+    
+    @objc private func triggerAction() {
+        guard let delegate = delegate else {
+            return
+        }
+        
+        delegate.swipeActionView(actionView: self, didTap: action)
     }
 }

@@ -132,8 +132,8 @@ open class SwipeTableViewCell: UITableViewCell {
         swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
         swipeActionsView = SwipeActionsContainerView(actions: visibleActions, swipeDirection: direction, actionsWidth: actionWidth)
         if let swipeActionsView = swipeActionsView {
-            swipeActionsView.translatesAutoresizingMaskIntoConstraints = false
             swipeActionsView.delegate = self
+            swipeActionsView.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(swipeActionsView, at: 0)
             swipeActionsViewLeadingConstraint = swipeActionsView.leftAnchor.constraint(equalTo: leftAnchor)
             swipeActionsViewLeadingConstraint?.isActive = true
@@ -273,8 +273,8 @@ open class SwipeTableViewCell: UITableViewCell {
     }
 }
 
-extension SwipeTableViewCell: SwipeCellActionViewDelegate {
-    func swipeCellActionView(actionView: SwipeActionsContainerView, didTap action: SwipeAction) {
-    
+extension SwipeTableViewCell: SwipeActionsContainerViewDelegate {
+    func indexPathForCellWith(actionsContainerView: SwipeActionsContainerView) -> IndexPath? {
+        return tableView.indexPath(for: self)
     }
 }

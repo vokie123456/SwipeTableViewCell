@@ -11,7 +11,7 @@ import UIKit
 class SwipeActionsContainerView: UIView {
     let actions: [SwipeAction]
     let swipeDirection: SwipeDirection
-    weak var delegate: SwipeCellActionViewDelegate?
+    weak var delegate: SwipeActionsContainerViewDelegate?
     
     private var actionViews = [SwipeActionView]()
     private var widthConstraints = [NSLayoutConstraint]()
@@ -34,6 +34,7 @@ class SwipeActionsContainerView: UIView {
         for index in 0..<actions.count {
             let action = actions[index]
             let actionView = SwipeActionView(action: action)
+            actionView.delegate = self
             actionView.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(actionView, at: 0)
             actionViews.append(actionView)
@@ -57,10 +58,6 @@ class SwipeActionsContainerView: UIView {
             edgeConstraint.isActive = true
             animatableConstraints.append(edgeConstraint)
         }
-    }
-    
-    @objc private func buttonTapped(button: UIButton) {
-        // TODO: Implement
     }
     
     func updateButtonsConstraints(with offset: CGFloat) {
@@ -92,8 +89,14 @@ class SwipeActionsContainerView: UIView {
         horizontalConstraint.constant = 0
         widthConstraint.constant = abs(offset)
     }
-    
-    func triggerAction(at index: Int) {
+}
+
+extension SwipeActionsContainerView: SwipeActionViewDelegate {
+    func swipeActionView(actionView: SwipeActionView, didTap action: SwipeAction) {
+        guard let delegate = delegate else {
+            return
+        }
         
+        action.handler(action, delegate.indexPathForCellWith(actionsContainerView: self))
     }
 }

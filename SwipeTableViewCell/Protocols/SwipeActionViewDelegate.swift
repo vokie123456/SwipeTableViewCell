@@ -8,6 +8,6 @@
 
 import Foundation
 
-@objc protocol SwipeCellActionViewDelegate {
-    @objc func swipeCellActionView(actionView: SwipeActionsContainerView, didTap action: SwipeAction)
+@objc protocol SwipeActionViewDelegate {
+    @objc func swipeActionView(actionView: SwipeActionView, didTap action: SwipeAction)
 }
