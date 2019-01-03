@@ -22,7 +22,7 @@ open class SwipeTableViewCell: UITableViewCell {
     private var swipeActionsView: SwipeActionsContainerView?
     private let panRecognizer = UIPanGestureRecognizer()
     private let tapRecognizer = UITapGestureRecognizer()
-    private var isCellSwiped = false
+    private(set) var isCellSwiped = false
     private var lastPan = CGPoint.zero
     private var cachedSelectionStyle: UITableViewCell.SelectionStyle = .default
     private var isSwipeToExecuteTriggered = false
@@ -102,12 +102,21 @@ open class SwipeTableViewCell: UITableViewCell {
     
     // MARK: Public methods
     
-    @objc func resetSwipe() {
+    @objc func resetSwipe(completion: (() -> Void)?) {
         if frame.origin.x == 0 {
             return
         }
         
-        swipeCell(to: CGPoint(x: 0, y: frame.origin.y))
+        swipeCell(to: CGPoint(x: 0, y: frame.origin.y), completion: completion)
+    }
+    
+    func triggerAction(at index: Int) {
+        if index >= visibleActions.count {
+            return
+        }
+        
+        let action = visibleActions[index]
+        action.handler(action, tableView.indexPath(for: self))
     }
     
     // MARK: Private methods
@@ -173,7 +182,7 @@ open class SwipeTableViewCell: UITableViewCell {
     
     private func swipeDidEnd(with velocity: CGPoint) {
         if isSwipeToExecuteTriggered {
-            resetSwipe()
+            resetSwipe(completion: nil)
         } else {
             var finalOrigin = CGPoint(x: 0, y: frame.minY)
             let xOrigin = frame.minX
@@ -183,13 +192,13 @@ open class SwipeTableViewCell: UITableViewCell {
                 finalOrigin = CGPoint(x: totalActionsWidth, y: frame.minY)
             }
             
-            swipeCell(to: finalOrigin)
+            swipeCell(to: finalOrigin, completion: nil)
         }
         
         lastPan = .zero
     }
     
-    private func swipeCell(to point: CGPoint) {
+    private func swipeCell(to point: CGPoint, completion: (() -> Void)?) {
         swipeActionsViewLeadingConstraint?.constant = -point.x
         if isActionsAnimationEnabled {
             swipeActionsView?.updateButtonsConstraints(with: point.x)
@@ -203,16 +212,25 @@ open class SwipeTableViewCell: UITableViewCell {
             }
         }, completion: { _ in
             self.isCellSwiped = self.frame.minX != 0
+            var triggerAction: SwipeAction? = nil
             if !self.isCellSwiped {
                 self.selectionStyle = self.cachedSelectionStyle
                 self.swipeActionsView?.removeFromSuperview()
                 self.swipeActionsView = nil
+                if self.isSwipeToExecuteTriggered {
+                    triggerAction = self.visibleActions[0]
+                }
+                
                 self.visibleActions.removeAll()
             }
             
-            if self.isSwipeToExecuteTriggered {
+            if let triggerAction = triggerAction {
                 self.isSwipeToExecuteTriggered = false
-//                self.triggerAction(at: 0)
+                triggerAction.handler(triggerAction, self.tableView.indexPath(for: self))
+            }
+            
+            if let completion = completion {
+                completion()
             }
         })
     }
@@ -233,7 +251,7 @@ open class SwipeTableViewCell: UITableViewCell {
     
     @objc private func handleTableViewPan(recognizer: UIPanGestureRecognizer) {
         if recognizer.state == .began {
-            resetSwipe()
+            resetSwipe(completion: nil)
         }
     }
     

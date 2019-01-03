@@ -21,8 +21,6 @@ class ViewController: UIViewController {
         tableView.register(SwipeTableViewCell.self, forCellReuseIdentifier: "cell")
         
     }
-
-
 }
 
 extension ViewController: UITableViewDataSource {
@@ -77,11 +75,20 @@ extension ViewController: SwipeTableViewCellDataSource {
         
         let deleteAction = SwipeAction(handler: {action, path in
             if let path = path {
-                self.rows -= 1
-                
-                self.tableView.deleteRows(at: [path], with: .fade)
+                if let cell = self.tableView.cellForRow(at: path) as? SwipeTableViewCell {
+                    if cell.isCellSwiped {
+                        cell.resetSwipe() {
+                            self.rows -= 1
+                            self.tableView.deleteRows(at: [path], with: .fade)
+                        }
+                    } else {
+                        self.rows -= 1
+                        self.tableView.deleteRows(at: [path], with: .fade)
+                    }
+                }
             }
         })
+        
         deleteAction.title = "Delete"
         deleteAction.backgroundColor = .red
         return deleteAction
