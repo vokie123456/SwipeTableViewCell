@@ -33,7 +33,7 @@ class SwipeActionsContainerView: UIView {
     private func setup() {
         for index in 0..<actions.count {
             let action = actions[index]
-            let actionView = SwipeActionView(action: action)
+            let actionView = SwipeActionView(action: action, width: actionsWidth)
             actionView.delegate = self
             actionView.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(actionView, at: 0)

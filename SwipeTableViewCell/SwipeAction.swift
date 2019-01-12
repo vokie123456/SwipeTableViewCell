@@ -10,9 +10,11 @@ import UIKit
 
 open class SwipeAction: NSObject {
     var title = ""
+    var textColor = UIColor.black
+    var font = UIFont.systemFont(ofSize: 14)
     var backgroundColor = UIColor.clear
     var image: UIImage?
-    var width: CGFloat = 60
+    var imageSize: CGFloat = 24
     
     let handler:(SwipeAction, IndexPath?) -> Void
     

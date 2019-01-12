@@ -37,6 +37,7 @@ extension ViewController: UITableViewDataSource {
         cell.textLabel?.text = "tadaaa"
         cell.delegate = self
         cell.dataSource = self
+        cell.swipeToExecuteTreshold = 150
         return cell
     }
 }
@@ -44,6 +45,10 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: SwipeTableViewCellDelegate {
     
     func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat {
+        if direction == .left {
+            return 150
+        }
+        
         return 80
     }
 }
@@ -90,7 +95,9 @@ extension ViewController: SwipeTableViewCellDataSource {
         })
         
         deleteAction.title = "Delete"
+        deleteAction.image = UIImage(named: "delete")
         deleteAction.backgroundColor = .red
+        
         return deleteAction
     }
 }

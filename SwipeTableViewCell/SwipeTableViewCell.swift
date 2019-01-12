@@ -18,11 +18,11 @@ open class SwipeTableViewCell: UITableViewCell {
     weak var delegate: SwipeTableViewCellDelegate?
     weak var dataSource: SwipeTableViewCellDataSource?
     private(set) weak var tableView: UITableView!
+    private(set) var isCellSwiped = false
     
     private var swipeActionsView: SwipeActionsContainerView?
     private let panRecognizer = UIPanGestureRecognizer()
     private let tapRecognizer = UITapGestureRecognizer()
-    private(set) var isCellSwiped = false
     private var lastPan = CGPoint.zero
     private var cachedSelectionStyle: UITableViewCell.SelectionStyle = .default
     private var isSwipeToExecuteTriggered = false
