@@ -16,7 +16,6 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         tableView.frame = view.bounds
         view.addSubview(tableView)
-        tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SwipeTableViewCell.self, forCellReuseIdentifier: "cell")
         
