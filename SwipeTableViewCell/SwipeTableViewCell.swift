@@ -70,11 +70,7 @@ open class SwipeTableViewCell: UITableViewCell {
             }
             
             let velocity = recognizer.velocity(in: self)
-            swipeDirection = .right
-            if velocity.x < 0 {
-                swipeDirection = .left
-            }
-            
+            swipeDirection = swipeDirectioForVelocity(velocity)
             cachedSelectionStyle = selectionStyle
             selectionStyle = .none
             setupSwipeActionsView(for: swipeDirection)
@@ -83,6 +79,14 @@ open class SwipeTableViewCell: UITableViewCell {
         } else if recognizer.state == .ended {
             swipeDidEnd(with: recognizer.velocity(in: self))
         }
+    }
+    
+    private func swipeDirectioForVelocity(_ velocity: CGPoint) -> SwipeDirection {
+        if velocity.x < 0 {
+            return .left
+        }
+        
+        return .right
     }
     
     // MARK: Overrides
@@ -148,7 +152,7 @@ open class SwipeTableViewCell: UITableViewCell {
             visibleActions.append(dataSource.swipeTableViewCell(self, actionAtIndex: i, forSwipeDirection: direction))
         }
         
-        let actionWidth = delegate?.swipeTableViewCell?(self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
+        let actionWidth = dataSource.swipeTableViewCell?(self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
         totalActionsWidth = CGFloat(visibleActions.count) * actionWidth
         swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
         swipeActionsView = SwipeActionsContainerView(actions: visibleActions, swipeDirection: direction, actionsWidth: actionWidth)
@@ -278,7 +282,12 @@ open class SwipeTableViewCell: UITableViewCell {
         
         if gestureRecognizer.isEqual(panRecognizer) {
             let velocity = panRecognizer.velocity(in: self)
-            let shouldStartSwipe = delegate?.shouldStartSwipeForSwipeTableViewCell?(self) ?? true
+            let direction = swipeDirectioForVelocity(velocity)
+            var shouldStartSwipe = true
+            if !isCellSwiped {
+                shouldStartSwipe = delegate?.swipeTableViewCell?(self, shouldStartSwipeForDirection: direction) ?? true
+            }
+            
             if abs(velocity.y) > abs(velocity.x) || !shouldStartSwipe {
                 return false
             }
