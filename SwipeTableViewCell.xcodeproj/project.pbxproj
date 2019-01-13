@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		190B3CAC21EB591D000A60B3 /* StackSwipeActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190B3CAB21EB591D000A60B3 /* StackSwipeActionView.swift */; };
+		190B3CAE21EB626C000A60B3 /* SwipeActionsContainerViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190B3CAD21EB626C000A60B3 /* SwipeActionsContainerViewDataSource.swift */; };
 		192A38B221DE23750081F859 /* SwipeActionsContainerViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192A38B121DE23750081F859 /* SwipeActionsContainerViewDelegate.swift */; };
 		1981BFF621BD3FD300F0473B /* SwipeTableViewCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1981BFF521BD3FD300F0473B /* SwipeTableViewCellDataSource.swift */; };
 		1981BFF821BD874200F0473B /* SwipeActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1981BFF721BD874200F0473B /* SwipeActionView.swift */; };
@@ -43,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		190B3CAB21EB591D000A60B3 /* StackSwipeActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackSwipeActionView.swift; sourceTree = "<group>"; };
+		190B3CAD21EB626C000A60B3 /* SwipeActionsContainerViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionsContainerViewDataSource.swift; sourceTree = "<group>"; };
 		192A38B121DE23750081F859 /* SwipeActionsContainerViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionsContainerViewDelegate.swift; sourceTree = "<group>"; };
 		1981BFF521BD3FD300F0473B /* SwipeTableViewCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewCellDataSource.swift; sourceTree = "<group>"; };
 		1981BFF721BD874200F0473B /* SwipeActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionView.swift; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 				3A879CD721B18F790006B4B5 /* SwipeActionsContainerView.swift */,
 				3A879CDA21B190AE0006B4B5 /* SwipeTableViewCell.swift */,
 				1981BFF721BD874200F0473B /* SwipeActionView.swift */,
+				190B3CAB21EB591D000A60B3 /* StackSwipeActionView.swift */,
 			);
 			path = SwipeTableViewCell;
 			sourceTree = "<group>";
@@ -112,6 +117,7 @@
 				3A879CE421B195E60006B4B5 /* SwipeActionViewDelegate.swift */,
 				1981BFF521BD3FD300F0473B /* SwipeTableViewCellDataSource.swift */,
 				192A38B121DE23750081F859 /* SwipeActionsContainerViewDelegate.swift */,
+				190B3CAD21EB626C000A60B3 /* SwipeActionsContainerViewDataSource.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -308,9 +314,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A879CE321B194980006B4B5 /* SwipeDirection.swift in Sources */,
+				190B3CAE21EB626C000A60B3 /* SwipeActionsContainerViewDataSource.swift in Sources */,
 				3A9AFF4821AB040B00A7024E /* ViewController.swift in Sources */,
 				3A879CDB21B190AE0006B4B5 /* SwipeTableViewCell.swift in Sources */,
 				3A879CD821B18F790006B4B5 /* SwipeActionsContainerView.swift in Sources */,
+				190B3CAC21EB591D000A60B3 /* StackSwipeActionView.swift in Sources */,
 				192A38B221DE23750081F859 /* SwipeActionsContainerViewDelegate.swift in Sources */,
 				3A879CE521B195E60006B4B5 /* SwipeActionViewDelegate.swift in Sources */,
 				3A879CE021B1911C0006B4B5 /* SwipeTableViewCellDelegate.swift in Sources */,

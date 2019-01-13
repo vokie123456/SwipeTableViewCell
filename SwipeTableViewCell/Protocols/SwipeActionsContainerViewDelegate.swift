@@ -8,6 +8,6 @@
 
 import UIKit
 
-@objc protocol SwipeActionsContainerViewDelegate {
-    @objc func indexPathForCellWith(actionsContainerView: SwipeActionsContainerView) -> IndexPath?
+protocol SwipeActionsContainerViewDelegate: class {
+    func indexPathForCellWith(actionsContainerView: SwipeActionsContainerView) -> IndexPath?
 }

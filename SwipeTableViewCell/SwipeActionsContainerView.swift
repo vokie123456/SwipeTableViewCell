@@ -12,6 +12,13 @@ class SwipeActionsContainerView: UIView {
     let actions: [SwipeAction]
     let swipeDirection: SwipeDirection
     weak var delegate: SwipeActionsContainerViewDelegate?
+    weak var dataSource: SwipeActionsContainerViewDataSource? {
+        didSet {
+            if let _ = dataSource {
+                setup()
+            }
+        }
+    }
     
     private var actionViews = [SwipeActionView]()
     private var widthConstraints = [NSLayoutConstraint]()
@@ -27,36 +34,40 @@ class SwipeActionsContainerView: UIView {
         self.swipeDirection = swipeDirection
         self.actionsWidth = actionsWidth
         super.init(frame: .zero)
-        setup()
     }
     
     private func setup() {
+        guard let ds = dataSource else {
+            return
+        }
+        
         for index in 0..<actions.count {
-            let action = actions[index]
-            let actionView = SwipeActionView(action: action, width: actionsWidth)
-            actionView.delegate = self
-            actionView.translatesAutoresizingMaskIntoConstraints = false
-            insertSubview(actionView, at: 0)
-            actionViews.append(actionView)
-            
-            // height
-            actionView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
-            
-            // width
-            let widthConstraint = actionView.widthAnchor.constraint(greaterThanOrEqualToConstant: actionsWidth)
-            widthConstraint.isActive = true
-            widthConstraints.append(widthConstraint)
-            
-            var edgeConstraint: NSLayoutConstraint!
             let offset = CGFloat(index) * actionsWidth
-            if swipeDirection == .right {
-                edgeConstraint = actionView.leftAnchor.constraint(equalTo: leftAnchor, constant: offset)
-            } else {
-                edgeConstraint = actionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -offset)
+            let actionView = ds.swipeActionsContainerView(self, actionViewForActionAtIndex: index)
+            if let actionView = actionView {
+                actionView.delegate = self
+                actionView.translatesAutoresizingMaskIntoConstraints = false
+                insertSubview(actionView, at: 0)
+                actionViews.append(actionView)
+                
+                // height
+                actionView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+                
+                // width
+                let widthConstraint = actionView.widthAnchor.constraint(greaterThanOrEqualToConstant: actionsWidth)
+                widthConstraint.isActive = true
+                widthConstraints.append(widthConstraint)
+                
+                var edgeConstraint: NSLayoutConstraint!
+                if swipeDirection == .right {
+                    edgeConstraint = actionView.leftAnchor.constraint(equalTo: leftAnchor, constant: offset)
+                } else {
+                    edgeConstraint = actionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -offset)
+                }
+                
+                edgeConstraint.isActive = true
+                animatableConstraints.append(edgeConstraint)
             }
-            
-            edgeConstraint.isActive = true
-            animatableConstraints.append(edgeConstraint)
         }
     }
     

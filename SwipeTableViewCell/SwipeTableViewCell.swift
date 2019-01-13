@@ -11,10 +11,10 @@ import UIKit
 open class SwipeTableViewCell: UITableViewCell {
     
     var isSwipeEnabled = true
-    var isSwipeToExecuteEnabled = true
+    var isSwipeToExecuteEnabled = false
     var isActionsAnimationEnabled = true
     var isTapToCloseEnabled = false
-    var swipeToExecuteTreshold: CGFloat = 100
+    var swipeToExecuteTreshold: CGFloat = 0
     weak var delegate: SwipeTableViewCellDelegate?
     weak var dataSource: SwipeTableViewCellDataSource?
     private(set) weak var tableView: UITableView!
@@ -47,6 +47,12 @@ open class SwipeTableViewCell: UITableViewCell {
     
     private func setup() {
         contentView.backgroundColor = .white
+        addGestureRecognizers()
+    }
+    
+    // MARK: Gesture recognizers
+    
+    private func addGestureRecognizers() {
         panRecognizer.addTarget(self, action: #selector(pan(recognizer:)))
         panRecognizer.delegate = self
         addGestureRecognizer(panRecognizer)
@@ -55,8 +61,6 @@ open class SwipeTableViewCell: UITableViewCell {
         tapRecognizer.delegate = self
         addGestureRecognizer(tapRecognizer)
     }
-    
-    // MARK: Gesture recognizers
     
     @objc private func pan(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: self)
@@ -102,6 +106,14 @@ open class SwipeTableViewCell: UITableViewCell {
     
     // MARK: Public methods
     
+    @objc func visibleAction(at index: Int) -> SwipeAction? {
+        if visibleActions.count <= index {
+            return nil
+        }
+        
+        return visibleActions[index]
+    }
+    
     @objc func resetSwipe(completion: (() -> Void)?) {
         if frame.origin.x == 0 {
             return
@@ -131,17 +143,19 @@ open class SwipeTableViewCell: UITableViewCell {
             swipeActionsView = nil
         }
         
-        let numberOfActions = dataSource.swipeTableViewCell(cell: self, numberOfActionsForSwipeDirection: direction)
+        let numberOfActions = dataSource.swipeTableViewCell(self, numberOfActionsForSwipeDirection: direction)
         for i in 0..<numberOfActions {
-            visibleActions.append(dataSource.swipeTableViewCell(cell: self, actionAtIndex: i, forSwipeDirection: direction))
+            visibleActions.append(dataSource.swipeTableViewCell(self, actionAtIndex: i, forSwipeDirection: direction))
         }
         
-        let actionWidth = delegate?.swipeTableViewCell?(cell: self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
+        let actionWidth = delegate?.swipeTableViewCell?(self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
         totalActionsWidth = CGFloat(visibleActions.count) * actionWidth
         swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
         swipeActionsView = SwipeActionsContainerView(actions: visibleActions, swipeDirection: direction, actionsWidth: actionWidth)
         if let swipeActionsView = swipeActionsView {
             swipeActionsView.delegate = self
+            swipeActionsView.dataSource = self
+            
             swipeActionsView.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(swipeActionsView, at: 0)
             swipeActionsViewLeadingConstraint = swipeActionsView.leftAnchor.constraint(equalTo: leftAnchor)
@@ -264,7 +278,7 @@ open class SwipeTableViewCell: UITableViewCell {
         
         if gestureRecognizer.isEqual(panRecognizer) {
             let velocity = panRecognizer.velocity(in: self)
-            let shouldStartSwipe = delegate?.shouldStartSwipeForSwipeTableViewCell?(cell: self) ?? true
+            let shouldStartSwipe = delegate?.shouldStartSwipeForSwipeTableViewCell?(self) ?? true
             if abs(velocity.y) > abs(velocity.x) || !shouldStartSwipe {
                 return false
             }
@@ -294,5 +308,15 @@ open class SwipeTableViewCell: UITableViewCell {
 extension SwipeTableViewCell: SwipeActionsContainerViewDelegate {
     func indexPathForCellWith(actionsContainerView: SwipeActionsContainerView) -> IndexPath? {
         return tableView.indexPath(for: self)
+    }
+}
+
+extension SwipeTableViewCell: SwipeActionsContainerViewDataSource {
+    func swipeActionsContainerView(_ swipeActionsContainerView: SwipeActionsContainerView, actionViewForActionAtIndex index: Int) -> SwipeActionView? {
+        guard let ds = dataSource, let swipeDirection = swipeDirection else {
+            return nil
+        }
+        
+        return ds.swipeTableViewCell(self, actionViewForActionAtIndex: index, forSwipeDirection: swipeDirection)
     }
 }

@@ -37,24 +37,19 @@ extension ViewController: UITableViewDataSource {
         cell.textLabel?.text = "tadaaa"
         cell.delegate = self
         cell.dataSource = self
-        cell.swipeToExecuteTreshold = 150
+//        cell.swipeToExecuteTreshold = 150
         return cell
     }
 }
 
 extension ViewController: SwipeTableViewCellDelegate {
-    
-    func swipeTableViewCell(cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat {
-        if direction == .left {
-            return 150
-        }
-        
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat {
         return 80
     }
 }
 
 extension ViewController: SwipeTableViewCellDataSource {
-    func swipeTableViewCell(cell: SwipeTableViewCell, numberOfActionsForSwipeDirection direction: SwipeDirection) -> Int {
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, numberOfActionsForSwipeDirection direction: SwipeDirection) -> Int {
         if direction == .right {
             return 2
         }
@@ -62,7 +57,7 @@ extension ViewController: SwipeTableViewCellDataSource {
         return 1
     }
     
-    func swipeTableViewCell(cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
         if direction == .right {
             let action = SwipeAction(handler: {action, path in
                 action.backgroundColor = .yellow
@@ -100,8 +95,14 @@ extension ViewController: SwipeTableViewCellDataSource {
         
         return deleteAction
     }
+    
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, actionViewForActionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeActionView? {
+        guard let action = cell.visibleAction(at: index) else {
+            return nil
+        }
+        
+        let view = StackSwipeActionView(action: action, width: 80)
+        return view
+    }
 }
 
-extension ViewController: UITableViewDelegate {
-    
-}
