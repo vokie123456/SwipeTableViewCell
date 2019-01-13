@@ -9,22 +9,35 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var rows = 10
+    
+    let exampleCellIdentifier = "ExampleCell"
+    var examples = ["Animation enabled", "Animation disabled", "Swipe to execute", "Custom action views"]
+    
     let tableView = UITableView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tableView.frame = view.bounds
         view.addSubview(tableView)
         tableView.dataSource = self
-        tableView.register(SwipeTableViewCell.self, forCellReuseIdentifier: "cell")
-        
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: exampleCellIdentifier)
+    }
+    
+    func viewControllerForExample(at index: Int) -> UIViewController {
+        switch index {
+        case 0:
+            return AnimationEnabledExampleViewController()
+        default:
+            return UIViewController()
+        }
     }
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rows
+        return examples.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -32,76 +45,18 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! SwipeTableViewCell
-        cell.textLabel?.text = "tadaaa"
-        cell.delegate = self
-        cell.dataSource = self
-//        cell.swipeToExecuteTreshold = 150
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: exampleCellIdentifier) else {
+            return UITableViewCell()
+        }
+
+        cell.textLabel?.text = examples[indexPath.row]
         return cell
     }
 }
 
-extension ViewController: SwipeTableViewCellDelegate {
-    func swipeTableViewCell(_ cell: SwipeTableViewCell, widthForActionsForSwipeDirection direction: SwipeDirection) -> CGFloat {
-        return 80
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let exampleController = viewControllerForExample(at: indexPath.row)
+        navigationController?.pushViewController(exampleController, animated: true)
     }
 }
-
-extension ViewController: SwipeTableViewCellDataSource {
-    func swipeTableViewCell(_ cell: SwipeTableViewCell, numberOfActionsForSwipeDirection direction: SwipeDirection) -> Int {
-        if direction == .right {
-            return 2
-        }
-        
-        return 1
-    }
-    
-    func swipeTableViewCell(_ cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
-        if direction == .right {
-            let action = SwipeAction(handler: {action, path in
-                action.backgroundColor = .yellow
-            })
-            if index == 0 {
-                action.title = "Add"
-                action.backgroundColor = .green
-            } else {
-                action.title = "Archive"
-                action.backgroundColor = .orange
-            }
-            
-            return action
-        }
-        
-        let deleteAction = SwipeAction(handler: {action, path in
-            if let path = path {
-                if let cell = self.tableView.cellForRow(at: path) as? SwipeTableViewCell {
-                    if cell.isCellSwiped {
-                        cell.resetSwipe() {
-                            self.rows -= 1
-                            self.tableView.deleteRows(at: [path], with: .fade)
-                        }
-                    } else {
-                        self.rows -= 1
-                        self.tableView.deleteRows(at: [path], with: .fade)
-                    }
-                }
-            }
-        })
-        
-        deleteAction.title = "Delete"
-        deleteAction.image = UIImage(named: "delete")
-        deleteAction.backgroundColor = .red
-        
-        return deleteAction
-    }
-    
-    func swipeTableViewCell(_ cell: SwipeTableViewCell, actionViewForActionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeActionView? {
-        guard let action = cell.visibleAction(at: index) else {
-            return nil
-        }
-        
-        let view = StackSwipeActionView(action: action, width: 80)
-        return view
-    }
-}
-
