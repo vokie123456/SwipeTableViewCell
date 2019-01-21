@@ -17,6 +17,7 @@ class AnimationEnabledExampleViewController: UIViewController {
     var readMessages = Set<Int>()
     var archiveMessages = Set<Int>()
     var pinnedMessages = Set<Int>()
+    var swipedCell: SwipeTableViewCell?
     
 
     override func viewDidLoad() {
@@ -27,14 +28,18 @@ class AnimationEnabledExampleViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    func leftAction(at index: Int) -> SwipeAction {
+    func leftAction(at index: Int, for cell: SwipeTableViewCell) -> SwipeAction {
         var action: SwipeAction!
         switch index {
         case 0:
             action = SwipeAction(handler: { action, indexPath in
                 if let indexPath = indexPath {
-                    self.numberOfMessages -= 1
-                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    if let cell = self.tableView.cellForRow(at: indexPath) as? SwipeTableViewCell {
+                        cell.resetSwipe(completion: {
+                            self.numberOfMessages -= 1
+                            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                        })
+                    }
                 }
             })
             
@@ -45,22 +50,48 @@ class AnimationEnabledExampleViewController: UIViewController {
         case 1:
             action = SwipeAction(handler: { action, indexPath in
                 if let indexPath = indexPath {
-                    self.pinnedMessages.insert(indexPath.row)
+                    cell.resetSwipe(completion: {
+                        if self.pinnedMessages.contains(indexPath.row) {
+                            self.pinnedMessages.remove(indexPath.row)
+                        } else {
+                            self.pinnedMessages.insert(indexPath.row)
+                        }
+                    })
                 }
             })
             
-            action.title = "Pin"
+            var title = "Pin"
+            if let path = tableView.indexPath(for: cell) {
+                if pinnedMessages.contains(path.row) {
+                    title = "Unpin"
+                }
+            }
+            
+            action.title = title
             action.textColor = .white
             action.backgroundColor = .orange
             break
         case 2:
             action = SwipeAction(handler: { action, indexPath in
                 if let indexPath = indexPath {
-                    self.archiveMessages.insert(indexPath.row)
+                    cell.resetSwipe(completion: {
+                        if self.archiveMessages.contains(indexPath.row) {
+                            self.archiveMessages.remove(indexPath.row)
+                        } else {
+                            self.archiveMessages.insert(indexPath.row)
+                        }
+                    })
                 }
             })
             
-            action.title = "Archive"
+            var title = "Archive"
+            if let path = tableView.indexPath(for: cell) {
+                if archiveMessages.contains(path.row) {
+                    title = "Restore"
+                }
+            }
+            
+            action.title = title
             action.textColor = .white
             action.backgroundColor = .purple
             break
@@ -69,6 +100,32 @@ class AnimationEnabledExampleViewController: UIViewController {
         }
         
         return action
+    }
+    
+    func rightAction(for cell: SwipeTableViewCell) -> SwipeAction {
+        let rightAction = SwipeAction { (action, indexPath) in
+            if let indexPath = indexPath {
+                cell.resetSwipe(completion: {
+                    if self.readMessages.contains(indexPath.row) {
+                        self.readMessages.remove(indexPath.row)
+                    } else {
+                        self.readMessages.insert(indexPath.row)
+                    }
+                })
+            }
+        }
+        
+        var title = "Mark as read"
+        if let path = tableView.indexPath(for: cell) {
+            if readMessages.contains(path.row) {
+                title = "Unread"
+            }
+        }
+        
+        rightAction.title = title
+        rightAction.textColor = .white
+        rightAction.backgroundColor = .blue
+        return rightAction
     }
 }
 
@@ -103,7 +160,7 @@ extension AnimationEnabledExampleViewController: SwipeTableViewCellDataSource {
         case .left:
             return 3
         case .right:
-            return 0
+            return 1
         default:
             return 0
         }
@@ -114,11 +171,11 @@ extension AnimationEnabledExampleViewController: SwipeTableViewCellDataSource {
     }
     
     func swipeTableViewCell(_ cell: SwipeTableViewCell, actionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeAction {
-//        if direction == .left {
-            return leftAction(at: index)
-//        } else {
-//
-//        }
+        if direction == .left {
+            return leftAction(at: index, for: cell)
+        } else {
+            return rightAction(for: cell)
+        }
     }
     
     func swipeTableViewCell(_ cell: SwipeTableViewCell, actionViewForActionAtIndex index: Int, forSwipeDirection direction: SwipeDirection) -> SwipeActionView? {
@@ -136,10 +193,6 @@ extension AnimationEnabledExampleViewController: SwipeTableViewCellDelegate {
     }
     
     func swipeTableViewCell(_ cell: SwipeTableViewCell, shouldStartSwipeForDirection direction: SwipeDirection) -> Bool {
-        if direction == .right {
-            return false
-        }
-        
         return true
     }
 }
