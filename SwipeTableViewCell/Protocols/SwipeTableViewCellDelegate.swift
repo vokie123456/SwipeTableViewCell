@@ -11,5 +11,6 @@ import UIKit
 
 @objc protocol SwipeTableViewCellDelegate {
     @objc optional func swipeTableViewCell(_ cell: SwipeTableViewCell, shouldStartSwipeForDirection direction: SwipeDirection) -> Bool
-    @objc optional func swipeTableViewCell(_ cell: SwipeTableViewCell, didTapActionAtIndex index: Int, withSwipeDirection direction: SwipeDirection)
+    @objc optional func swipeTableViewCell(_ cell: SwipeTableViewCell, willStartSwipeForDirection direction: SwipeDirection)
+    @objc optional func swipeTableViewCell(_ cell: SwipeTableViewCell, didEndSwipeForDirection direction: SwipeDirection)
 }
