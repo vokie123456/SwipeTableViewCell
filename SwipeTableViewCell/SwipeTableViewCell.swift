@@ -29,7 +29,6 @@ open class SwipeTableViewCell: UITableViewCell {
     private var swipeDirection: SwipeDirection?
     private var totalActionsWidth: CGFloat = 0
     private let defaultActionWidth: CGFloat = 44
-    private var swipeToExecuteTrigger: CGFloat = 0
     private var visibleActions = [SwipeAction]()
     
     private var swipeActionsViewLeadingConstraint: NSLayoutConstraint?
@@ -71,6 +70,7 @@ open class SwipeTableViewCell: UITableViewCell {
             
             let velocity = recognizer.velocity(in: self)
             swipeDirection = swipeDirectioForVelocity(velocity)
+            delegate?.swipeTableViewCell?(self, willStartSwipeForDirection: swipeDirection!)
             cachedSelectionStyle = selectionStyle
             selectionStyle = .none
             setupSwipeActionsView(for: swipeDirection)
@@ -154,7 +154,6 @@ open class SwipeTableViewCell: UITableViewCell {
         
         let actionWidth = dataSource.swipeTableViewCell?(self, widthForActionsForSwipeDirection: direction) ?? defaultActionWidth
         totalActionsWidth = CGFloat(visibleActions.count) * actionWidth
-        swipeToExecuteTrigger = totalActionsWidth + swipeToExecuteTreshold
         swipeActionsView = SwipeActionsContainerView(actions: visibleActions, swipeDirection: direction, actionsWidth: actionWidth)
         if let swipeActionsView = swipeActionsView {
             swipeActionsView.delegate = self
@@ -190,7 +189,7 @@ open class SwipeTableViewCell: UITableViewCell {
         frame = CGRect(x: xOrigin, y: frame.minY, width: frame.width, height: frame.height)
         swipeActionsViewLeadingConstraint?.constant = -xOrigin
         swipeActionsView?.updateConstraintsIfNeeded() // is this needed?
-        if isSwipeToExecuteEnabled && (abs(xOrigin) >= swipeToExecuteTrigger || isSwipeToExecuteTriggered) {
+        if isSwipeToExecuteEnabled && (abs(xOrigin) >= swipeToExecuteTreshold || isSwipeToExecuteTriggered) {
             startSwipeToExcuteAnimation(with: xOrigin)
         } else if isActionsAnimationEnabled {
             swipeActionsView?.updateButtonsConstraints(with: xOrigin)
@@ -210,7 +209,9 @@ open class SwipeTableViewCell: UITableViewCell {
                 finalOrigin = CGPoint(x: totalActionsWidth, y: frame.minY)
             }
             
-            swipeCell(to: finalOrigin, completion: nil)
+            swipeCell(to: finalOrigin, completion: {
+                self.delegate?.swipeTableViewCell?(self, didEndSwipeForDirection: self.swipeDirection!)
+            })
         }
         
         lastPan = .zero
@@ -254,7 +255,7 @@ open class SwipeTableViewCell: UITableViewCell {
     }
     
     private func startSwipeToExcuteAnimation(with offset: CGFloat) {
-        if abs(offset) >= swipeToExecuteTrigger {
+        if abs(offset) >= swipeToExecuteTreshold {
             swipeActionsView?.updateSwipeToExecuteActionConstraints(with: offset)
             isSwipeToExecuteTriggered = true
         } else {
