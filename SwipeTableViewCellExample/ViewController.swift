@@ -28,7 +28,11 @@ class ViewController: UIViewController {
     func viewControllerForExample(at index: Int) -> UIViewController {
         switch index {
         case 0:
-            return AnimationEnabledExampleViewController()
+            return AnimationEnabledExampleViewController(animationsEnabled: true)
+        case 1:
+            return AnimationEnabledExampleViewController(animationsEnabled: false)
+        case 2:
+            return SwipeToExecuteExampleController()
         default:
             return UIViewController()
         }

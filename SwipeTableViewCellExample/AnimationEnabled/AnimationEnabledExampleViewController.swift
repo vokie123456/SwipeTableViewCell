@@ -18,14 +18,24 @@ class AnimationEnabledExampleViewController: UIViewController {
     var archiveMessages = Set<Int>()
     var pinnedMessages = Set<Int>()
     var swipedCell: SwipeTableViewCell?
+    let animationsEnabled: Bool
     
-
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("Not implemented")
+    }
+    
+    init(animationsEnabled: Bool) {
+        self.animationsEnabled = animationsEnabled
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        title = "Mail list"
         tableView.frame = view.bounds
         view.addSubview(tableView)
         tableView.dataSource = self
+        tableView.delegate = self
     }
     
     func leftAction(at index: Int, for cell: SwipeTableViewCell) -> SwipeAction {
@@ -129,6 +139,16 @@ class AnimationEnabledExampleViewController: UIViewController {
     }
 }
 
+extension AnimationEnabledExampleViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? SwipeTableViewCell {
+            if cell.isEqual(swipedCell) {
+                swipedCell?.resetSwipe(completion: nil)
+            }
+        }
+    }
+}
+
 extension AnimationEnabledExampleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return numberOfMessages
@@ -142,6 +162,7 @@ extension AnimationEnabledExampleViewController: UITableViewDataSource {
         var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? SwipeTableViewCell
         if cell == nil {
             cell = SwipeTableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
+            cell?.isActionsAnimationEnabled = animationsEnabled
             cell?.dataSource = self
             cell?.delegate = self
         }
@@ -188,12 +209,18 @@ extension AnimationEnabledExampleViewController: SwipeTableViewCellDataSource {
 }
 
 extension AnimationEnabledExampleViewController: SwipeTableViewCellDelegate {
-    func swipeTableViewCell(_ cell: SwipeTableViewCell, didTapActionAtIndex index: Int, withSwipeDirection direction: SwipeDirection) {
-        
-    }
-    
     func swipeTableViewCell(_ cell: SwipeTableViewCell, shouldStartSwipeForDirection direction: SwipeDirection) -> Bool {
         return true
+    }
+    
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, willStartSwipeForDirection direction: SwipeDirection) {
+        if !cell.isEqual(swipedCell) {
+            swipedCell?.resetSwipe(completion: nil)
+        }
+    }
+    
+    func swipeTableViewCell(_ cell: SwipeTableViewCell, didEndSwipeForDirection direction: SwipeDirection) {
+        swipedCell = cell
     }
 }
 
