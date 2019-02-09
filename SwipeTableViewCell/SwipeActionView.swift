@@ -26,6 +26,7 @@ class SwipeActionView: UIView {
         setupSwipeActionView()
     }
     
+    // TODO: maybe this method is not needed. Subclasses can use their own.
     func setupSwipeActionView() {
         fatalError("Should be overriden in subclasses")
     }

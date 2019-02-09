@@ -33,6 +33,8 @@ class ViewController: UIViewController {
             return AnimationEnabledExampleViewController(animationsEnabled: false)
         case 2:
             return SwipeToExecuteExampleController()
+        case 3:
+            return CustomActionViewsExampleController()
         default:
             return UIViewController()
         }

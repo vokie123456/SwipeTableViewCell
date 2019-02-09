@@ -18,7 +18,7 @@ open class SwipeTableViewCell: UITableViewCell {
     weak var delegate: SwipeTableViewCellDelegate?
     weak var dataSource: SwipeTableViewCellDataSource?
     private(set) weak var tableView: UITableView!
-    private(set) var isCellSwiped = false
+    private(set) var isSwiped = false
     
     private var swipeActionsView: SwipeActionsContainerView?
     private let panRecognizer = UIPanGestureRecognizer()
@@ -63,7 +63,7 @@ open class SwipeTableViewCell: UITableViewCell {
     
     @objc private func pan(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: self)
-        if recognizer.state == .began && !isCellSwiped {
+        if recognizer.state == .began && !isSwiped {
             if isHighlighted {
                 isHighlighted = false
             }
@@ -188,7 +188,7 @@ open class SwipeTableViewCell: UITableViewCell {
         
         frame = CGRect(x: xOrigin, y: frame.minY, width: frame.width, height: frame.height)
         swipeActionsViewLeadingConstraint?.constant = -xOrigin
-        swipeActionsView?.updateConstraintsIfNeeded() // is this needed?
+        swipeActionsView?.updateConstraintsIfNeeded()
         if isSwipeToExecuteEnabled && (abs(xOrigin) >= swipeToExecuteTreshold || isSwipeToExecuteTriggered) {
             startSwipeToExcuteAnimation(with: xOrigin)
         } else if isActionsAnimationEnabled {
@@ -230,9 +230,9 @@ open class SwipeTableViewCell: UITableViewCell {
                 self.swipeActionsView?.layoutIfNeeded()
             }
         }, completion: { _ in
-            self.isCellSwiped = self.frame.minX != 0
+            self.isSwiped = self.frame.minX != 0
             var triggerAction: SwipeAction? = nil
-            if !self.isCellSwiped {
+            if !self.isSwiped {
                 self.selectionStyle = self.cachedSelectionStyle
                 self.swipeActionsView?.removeFromSuperview()
                 self.swipeActionsView = nil
@@ -277,7 +277,7 @@ open class SwipeTableViewCell: UITableViewCell {
     // MARK: UIGestureRecognizerDelegate
     
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if !isSwipeEnabled || (gestureRecognizer.isEqual(tapRecognizer) && (!isCellSwiped || !isTapToCloseEnabled)) {
+        if !isSwipeEnabled || (gestureRecognizer.isEqual(tapRecognizer) && (!isSwiped || !isTapToCloseEnabled)) {
             return false
         }
         
@@ -285,7 +285,7 @@ open class SwipeTableViewCell: UITableViewCell {
             let velocity = panRecognizer.velocity(in: self)
             let direction = swipeDirectioForVelocity(velocity)
             var shouldStartSwipe = true
-            if !isCellSwiped {
+            if !isSwiped {
                 shouldStartSwipe = delegate?.swipeTableViewCell?(self, shouldStartSwipeForDirection: direction) ?? true
             }
             
@@ -302,7 +302,7 @@ open class SwipeTableViewCell: UITableViewCell {
             return false
         }
         
-        if !isCellSwiped {
+        if !isSwiped {
             return super.point(inside: point, with: event)
         }
         

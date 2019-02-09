@@ -40,22 +40,17 @@ extension SwipeToExecuteExampleController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? SwipeTableViewCell
-        if cell == nil {
-            cell = SwipeTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
-            
-        }
-        
-        cell?.isSwipeToExecuteEnabled = true
-        cell?.swipeToExecuteTreshold = 30
-        cell?.dataSource = self
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! SwipeTableViewCell
+        cell.isSwipeToExecuteEnabled = true
+        cell.swipeToExecuteTreshold = 30
+        cell.dataSource = self
         let attrString = NSMutableAttributedString(string: groceries[indexPath.row])
         if doneItems.contains(indexPath.row) {
             attrString.addAttribute(.strikethroughStyle, value: 2, range: NSRange(location: 0, length: attrString.length))
         }
         
-        cell!.textLabel?.attributedText = attrString
-        return cell!
+        cell.textLabel?.attributedText = attrString
+        return cell
     }
 }
 
